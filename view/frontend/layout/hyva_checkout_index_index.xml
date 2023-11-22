@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <block name="sendcloud_sendcloud"
+               template="BethlehemIT_HyvaSendCloud::form.phtml"
+        >
+            <arguments>
+                <argument name="magewire" xsi:type="object">
+                    \BethlehemIT\HyvaSendCloud\Magewire\ServicePoint
+                </argument>
+            </arguments>
+
+            <block name="sendcloud_sendcloud.js"
+                   template="BethlehemIT_HyvaSendCloud::js.phtml"
+            />
+
+            <block name="sendcloud_sendcloud.address"
+                   template="BethlehemIT_HyvaSendCloud::address.phtml"
+            />
+
+            <block name="sendcloud_sendcloud.failure"
+                   template="BethlehemIT_HyvaSendCloud::failure.phtml"
+            />
+
+            <block name="sendcloud_sendcloud.loading"
+                   template="Hyva_Theme::ui/loading.phtml"
+            />
+        </block>
+
+        <move element="sendcloud_sendcloud" destination="checkout.shipping.methods"/>
+    </body>
+</page>

@@ -1,0 +1,77 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\Escaper;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+?>
+
+<script type="application/javascript">
+    const element = document.getElementById("shipping-method-sendcloud");
+    if (element) {
+        if (!document.getElementById("sendcloudkeyscriptloaded")) {
+            const keyscript = document.createElement("script");
+            keyscript.id = "sendcloudkeyscriptloaded";
+            keyscript.type = "text/javascript";
+            keyscript.src = "<?= $escaper->escapeHtml($storeConfig->getStoreConfig('sendcloud/sendcloud/script_url')); ?>";
+            keyscript.onload = () => {
+                dispatchEvent(new CustomEvent("sendcloudkeyscriptloaded"));
+            }
+            document.head.appendChild(keyscript);
+        }
+
+        if (!document.getElementById("sendcloudscriptloaded")) {
+            const script = document.createElement("script");
+            script.id = "sendcloudscriptloaded";
+            script.type = "text/javascript";
+            script.src = "https://embed.sendcloud.sc/spp/1.0.0/api.min.js";
+            script.onload = () => {
+                dispatchEvent(new CustomEvent("sendcloudscriptloaded"));
+            }
+            document.head.appendChild(script);
+        }
+    }
+
+    window.sendcloudOpen = (data) => {
+        let lang = document.documentElement.lang;
+        if(!(lang === 'en' || lang === 'fr' || lang === 'nl' || lang === 'de')){
+            lang = 'en'
+        }
+
+        const config = {
+            'apiKey': sendcloud.getApiKey(),
+            'postalCode': data.postalCode,
+            'country': data.country,
+            'language': lang
+        };
+
+        sendcloud.servicePoints.open(
+            config,
+            function(servicePointObject, postNumber) {
+                var servicePointData = {
+                    sendcloud_service_point_id: servicePointObject.id,
+                    sendcloud_service_point_name: servicePointObject.name,
+                    sendcloud_service_point_street: servicePointObject.street,
+                    sendcloud_service_point_house_number: servicePointObject.house_number,
+                    sendcloud_service_point_zip_code: servicePointObject.postal_code,
+                    sendcloud_service_point_city: servicePointObject.city,
+                    sendcloud_service_point_country: servicePointObject.country,
+                    sendcloud_service_point_postnumber: postNumber,
+                    sendcloud_service_point_carrier: servicePointObject.carrier
+                };
+
+                data.servicePointData = servicePointData;
+                Alpine.store('sendcloud_servicepoint', servicePointData);
+            },
+            function(errors) {
+                errors.forEach(function(error) {
+                    console.log('Failure callback, reason: ' + error);
+                });
+            }
+        );
+    };
+</script>

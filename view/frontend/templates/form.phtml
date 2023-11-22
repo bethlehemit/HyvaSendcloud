@@ -1,0 +1,73 @@
+<?php
+
+use BethlehemIT\HyvaSendCloud\Magewire\ServicePoint;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var ServicePoint $magewire */
+
+?>
+
+<div>
+    <div id="shipping-method-option-sendcloud-servicepoint"
+        x-data="{
+            keyScriptLoaded: !!document.getElementById('sendcloudkeyscriptloaded'),
+            scriptLoaded: !!document.getElementById('sendcloudscriptloaded'),
+            isLoading: false,
+            failure: false,
+            servicePointData: $wire.entangle('servicePointData'),
+            postalCode: $wire.entangle('postalCode'),
+            country:  $wire.entangle('country')
+        }"
+        @sendcloudkeyscriptloaded.window="keyScriptLoaded = true"
+        @sendcloudscriptloaded.window="scriptLoaded = true"
+    >
+        <?= $block->getChildHtml("sendcloud_sendcloud.js") ?>
+
+        <button type="button"
+                class="btn btn-primary bg-green-600 hover:bg-green-500"
+                @click="if (scriptLoaded && keyScriptLoaded) {
+                        sendcloudOpen($data);
+                    } else {
+                        isLoading = true;
+                        sendcloudSpinner = (el) => {
+                            const waitFunc = (el, i, f) => {
+                                if (el.scriptLoaded && el.keyScriptLoaded) {
+                                    el.isLoading = false;
+                                    sendcloudOpen(el);
+                                    return;
+                                }
+
+                                if(i < 10) {
+                                    setTimeout(() => {f(el, i + 1, f)}, 500);
+                                } else {
+                                    el.isLoading = false;
+                                    el.failure = true;
+                                }
+                            };
+                            setTimeout(waitFunc(el, 0, waitFunc), 500);
+                        }
+                        sendcloudSpinner($data);
+                    }"
+                x-effect="if (Alpine.store('sendcloud_servicepoint')) {
+                    $data.servicePointData = Alpine.store('sendcloud_servicepoint');
+                }"
+        >
+            <?= $escaper->escapeHtml(__("Select servicepoint")) ?>
+        </button>
+
+        <div x-show="servicePointData.sendcloud_service_point_id">
+            <?= $block->getChildHtml("sendcloud_sendcloud.address") ?>
+        </div>
+
+        <div x-show="failure">
+            <?= $block->getChildHtml("sendcloud_sendcloud.failure") ?>
+        </div>
+
+        <?= $block->getChildHtml("sendcloud_sendcloud.loading") ?>
+    </div>
+</div>

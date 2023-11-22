@@ -1,0 +1,5 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="magewire_shipping_method_selected">
+        <observer name="bethlehemit_hyvasendcloud_shipping_method_selected" instance="BethlehemIT\HyvaSendCloud\Observer\ShippingMethodSelected"/>
+    </event>
+</config>
