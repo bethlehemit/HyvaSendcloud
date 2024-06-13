@@ -32,8 +32,9 @@ class SendcloudModifier implements EntityFormModifierInterface
             $form->getField(AddressInterface::KEY_POSTCODE)->disable();
             $street = $form->getField(AddressInterface::KEY_STREET);
             $street->disable();
-            $street->getRelatives()[1]->disable();
-            $street->getRelatives()[2]->disable();
+            foreach ($street->getRelatives() as $relative) {
+                $relative->disable();
+            }
             $form->getField(AddressInterface::KEY_FIRSTNAME)->disable();
             $form->getField(AddressInterface::KEY_LASTNAME)->disable();
             $form->getField(AddressInterface::KEY_COUNTRY_ID)->disable();

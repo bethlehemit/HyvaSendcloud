@@ -1,0 +1,25 @@
+{
+  "name": "bethlehemit/hyvasendcloud",
+  "description": "Compatibility for Sendcloud in the Hyva Checkout",
+  "type": "magento2-module",
+  "require": {
+    "magento/framework": ">=102.0.3",
+    "sendcloud/sendcloud": "^2.0",
+    "hyva-themes/magento2-compat-module-fallback": "*",
+    "hyva-themes/magento2-hyva-checkout": "^1.1"
+  },
+  "authors": [{
+      "name": "Ronald Bethlehem",
+      "email": "ronald@bethlehemit.nl"
+  }],
+  "license": "see LICENSE.md",
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "BethlehemIT\\HyvaSendcloud\\": ""
+    }
+  }
+}
+
