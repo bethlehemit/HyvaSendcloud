@@ -15,10 +15,10 @@
   "license": "see LICENSE.md",
   "autoload": {
     "files": [
-      "registration.php"
+      "src/registration.php"
     ],
     "psr-4": {
-      "BethlehemIT\\HyvaSendcloud\\": ""
+      "BethlehemIT\\HyvaSendCloud\\": "src/"
     }
   }
 }
