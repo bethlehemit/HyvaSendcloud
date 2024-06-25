@@ -22,15 +22,6 @@ class ShippingMethodSelected implements ObserverInterface
         if ($shippingAddress->getShippingMethod() !== "sendcloud_sendcloud") {
             if (!empty($quote->getSendcloudServicePointId())) {
                 $quote->setSendcloudServicePointId(null);
-                $shippingAddress
-                    ->setFirstname(null)
-                    ->setLastname(null)
-                    ->setCountryId($quote->getBillingAddress()->getCountryId())
-                    ->setPostcode(null)
-                    ->setStreet(null)
-                    ->setCity(null)
-                    ->setTelephone(null)
-                    ->setSameAsBilling(true);
                 $this->quoteRepository->save($quote);
             }
         }

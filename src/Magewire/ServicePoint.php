@@ -18,7 +18,6 @@ class ServicePoint extends Component implements EvaluationInterface
     ];
 
     protected $listeners = [
-        'billing_address_saved' => 'refresh',
         'shipping_address_saved' => 'refresh'
     ];
 
@@ -41,10 +40,9 @@ class ServicePoint extends Component implements EvaluationInterface
 
     public function boot(): void
     {
-        $billingAddress = $this->sessionCheckout->getQuote()->getBillingAddress();
-
-        $this->postalCode = $billingAddress->getPostcode();
-        $this->country = $billingAddress->getCountryId();
+        $shippingAddress = $this->sessionCheckout->getQuote()->getShippingAddress();
+        $this->postalCode = $shippingAddress->getPostcode();
+        $this->country = $shippingAddress->getCountryId();
     }
 
     public function set($key, $value) {
@@ -61,19 +59,6 @@ class ServicePoint extends Component implements EvaluationInterface
             $quote->setSendcloudServicePointCity($value["sendcloud_service_point_city"]);
             $quote->setSendcloudServicePointCountry($value["sendcloud_service_point_country"]);
             $quote->setSendcloudServicePointPostnumber($value["sendcloud_service_point_postnumber"]);
-
-            $quote->getBillingAddress()->setSameAsBilling(false); //our hack
-            $quote->getShippingAddress()
-                ->setFirstname(strtoupper($value["sendcloud_service_point_carrier"]))
-                ->setLastname($value["sendcloud_service_point_name"])
-                ->setCountryId($value["sendcloud_service_point_country"])
-                ->setPostcode($value["sendcloud_service_point_zip_code"])
-                ->setStreet([$value["sendcloud_service_point_street"], $value["sendcloud_service_point_house_number"]])
-                ->setCity($value["sendcloud_service_point_city"])
-                ->setTelephone("-")
-                ->setSameAsBilling(false);
-
-            $this->emit("shipping_address_submitted");
 
             $this->quoteRepository->save($quote);
         }
